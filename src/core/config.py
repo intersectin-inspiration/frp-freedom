@@ -85,7 +85,9 @@ class Config:
         if self.config_file.exists():
             try:
                 with open(self.config_file, 'r') as f:
-                    loaded_config = yaml.safe_load(f)
+                    loaded_config = yaml.safe_load(f) or {}
+                    if not isinstance(loaded_config, dict):
+                        raise ValueError("configuration root must be a mapping")
                 # Merge with defaults to ensure all keys exist
                 return self._merge_configs(self.default_config, loaded_config)
             except Exception as e:
